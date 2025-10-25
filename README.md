@@ -63,31 +63,31 @@ tracker = trackers[0]
 tracker = client.tracker("TRACKER_ID")
 
 # Retrieve details
-await trackers.details() # Includes device capabilities, battery status(not level), charging state and so on
+await tracker.details() # Includes device capabilities, battery status(not level), charging state and so on
 
 await tracker.hw_info() # Includes battery level, firmware version, model and so on
 
 # Retrieve current location 
 await tracker.pos_report() # Includes coordinates, latitude, speed and so on
-# Retrieve hardware info
 
-# Retrive history positions
-```python
+# Retrieve history positions
 now = datetime.timestamp(datetime.now())
 time_from = now - 3600 * LAST_HOURS
 time_to = now
 format = json_segments
-await tracker.positions(time_from, time_to, format):
-```
+await tracker.positions(time_from, time_to, format)
 
-# Control the buzzer
-await set_buzzer_active(True) # or False
+# Control the buzzer (default timeout: 300s)
+await tracker.set_buzzer_active(True) # or False
+await tracker.set_buzzer_active(True, timeout=60) # Stay active for 60 seconds
 
-# Control the LED
-await set_led_active(True) # or False
+# Control the LED (default timeout: 300s)
+await tracker.set_led_active(True) # or False
+await tracker.set_led_active(True, timeout=120) # Stay active for 120 seconds
 
-# Control the live tracking
-await set_live_tracking_active(True) # or False
+# Control the live tracking (default timeout: 300s)
+await tracker.set_live_tracking_active(True) # or False
+await tracker.set_live_tracking_active(True, timeout=600) # Stay active for 600 seconds (10 min)
 ```
 
 #### Trackable objects (usually pets)
@@ -113,7 +113,22 @@ The first event always includes full current status of the tracker including cur
 the LED and the live tracking.
 
 All following events will have the same name, but only include one of these: either a position, battery info, or a buzzer/LED/live
-status.
+tracking status.
+
+Example event structure:
+```python
+{
+    "tracker_id": "TRACKER_ID",
+    "live_tracking": {
+        "active": False,      # Current state
+        "timeout": 300,       # Duration in seconds
+        "remaining": 0,       # Time left if active
+        "pending": False,     # Command is being processed
+        "reconnecting": False # Reconnection state
+    },
+    # ... other fields like position, hardware, buzzer_control, led_control, etc.
+}
+```
 
 ## Contribution
 You know;)

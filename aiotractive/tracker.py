@@ -24,17 +24,20 @@ class Tracker(DataObject):
         }
         return await self._api.request(url, params=params)
 
-    async def set_buzzer_active(self, active):
+    async def set_buzzer_active(self, active, timeout=None):
         action = self.ACTIONS[active]
+        params = {"timeout": int(timeout)} if timeout is not None else None
 
-        return await self._api.request(f"tracker/{self._id}/command/buzzer_control/{action}")
+        return await self._api.request(f"tracker/{self._id}/command/buzzer_control/{action}", params=params)
 
-    async def set_led_active(self, active):
+    async def set_led_active(self, active, timeout=None):
         action = self.ACTIONS[active]
+        params = {"timeout": int(timeout)} if timeout is not None else None
 
-        return await self._api.request(f"tracker/{self._id}/command/led_control/{action}")
+        return await self._api.request(f"tracker/{self._id}/command/led_control/{action}", params=params)
 
-    async def set_live_tracking_active(self, active):
+    async def set_live_tracking_active(self, active, timeout=None):
         action = self.ACTIONS[active]
+        params = {"timeout": int(timeout)} if timeout is not None else None
 
-        return await self._api.request(f"tracker/{self._id}/command/live_tracking/{action}")
+        return await self._api.request(f"tracker/{self._id}/command/live_tracking/{action}", params=params)
